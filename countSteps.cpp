@@ -5,6 +5,32 @@
 #include <map>
 
 int countCalls = 0;
+
+double countWaysUtil(int steps, std::map<int, double>& stepsToCount) {
+    countCalls++;
+    if (steps == 0) {
+        return 1;
+    }
+    if (steps < 0) {
+        return 0;
+    }
+   
+    auto iter = stepsToCount.find(steps);
+    if (iter != stepsToCount.end()) {
+        // std::cout << " steps= " << steps << " found in map= " << iter->second << std::endl;
+        return iter->second;
+    }
+    
+    int res = countWaysUtil(steps-1, stepsToCount) + 
+    countWaysUtil(steps-2, stepsToCount) + 
+    countWaysUtil(steps-3, stepsToCount);
+    
+    stepsToCount[steps] = res;
+    
+    // std::cout << " steps= " << steps << " added to map: " << res << std::endl;
+    return res;
+}
+
 double countStepsUtil(int steps, std::map<int, double>& stepsToCount) {
     countCalls++;
     if (steps == 0) {
@@ -39,8 +65,15 @@ double countSteps(int steps) {
     return countStepsUtil(steps, stepsToCount);
 }
 
+double countWays(int steps) {
+    std::map<int, double> stepsToCount;
+    return countWaysUtil(steps, stepsToCount);
+}
+
 int main() {
-    std::cout << countSteps(10) << std::endl;
-    std::cout << "Number of calls: " << countCalls;
+    int strais = 10;
+    std::cout << "number of steps to go up " << strais << " strais: " << countSteps(strais) << std::endl;
+    std::cout << "number of ways to go up " << strais << " strais: " << countWays(strais) << std::endl;
+    // std::cout << "Number of calls: " << countCalls;
     
 }
