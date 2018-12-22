@@ -1,7 +1,7 @@
 
-// C++ program to find single source shortest paths for Directed Acyclic Graphs 
+//Find the number of ways and steps requires to go up the stairs when you can go up 1, 2 or 3 steps at a time.
+
 #include<iostream> 
-#include <algorithm>
 #include <map>
 
 int countCalls = 0;
