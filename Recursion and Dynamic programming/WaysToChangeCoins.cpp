@@ -3,15 +3,28 @@
 
 #include <iostream> 
 #include <map>
-#include <list>
+#include <set>
 
-struct Change {
+class Change {
+public:
+    std::string serialize() const {
+        return "\nChange:\n" +
+        std::to_string(pennies) + " pennies, " +
+        std::to_string(nickels) + " nickels, " +
+        std::to_string(dimes) + " dimes, " +
+        std::to_string(quarters) + "quarters";
+    }
+    
+    bool operator< (const Change& other) const {
+        return serialize() < other.serialize();
+    }
+    
     int quarters=0;
     int dimes=0;
     int nickels=0;
     int pennies=0;
 };
-using ChangeWays = std::list<Change>;
+using ChangeWays = std::set<Change>;
 
 using CacheChange = std::map<int, int>;
 int countCalls = 0;
@@ -26,8 +39,12 @@ int numWaysToChangeUtil(int ammount, Change currChange, ChangeWays& changeWays, 
         return 0;
     }
     if (val <= 1) {
-        changeWays.push_back(currChange);
-        return 1;
+        bool change_exist = (changeWays.find(currChange) != changeWays.end());
+        if (!change_exist) {
+            changeWays.insert(currChange);
+            return 1;
+        }
+        return 0;
     }
     
     auto currValIter = cache.find(val);
@@ -84,9 +101,7 @@ int numWaysToChange(int val) {
     int res = numWaysToChangeUtil(val, currChange, changeWays, cache);
     std::cout << "\nnumber of ways according to output structure: " << changeWays.size() << "\n";
     for (auto change : changeWays) {
-        std::cout << "\nChange:\n";
-        std::cout << change.pennies << " pennies, " << change.nickels <<
-        " nickels, " << change.dimes << " dimes, " << change.quarters << "quarters";
+        std::cout << change.serialize();
     }
     return res;
 }
